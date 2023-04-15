@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html {
+    min-height: 100%;
+    @apply bg-latte;
+    @apply text-gray;
+}
+
+a {
+    @apply bg-lavender-200;
+    @apply text-lavender-700;
+    @apply hover:bg-lavender-400;
+    @apply transition;
+}
