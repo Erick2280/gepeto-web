@@ -1,0 +1,10 @@
+<button #cardBoxButton [ngStyle]="{'background-image': 'url(' + cardBackgroundImage + ')' }" class="relative flex flex-col w-full min-h-[15rem] bg-center bg-cover rounded-3xl hover:shadow-lg transition border-4 border-gray">
+    <div class="flex-auto p-4 md:p-6">
+      <p class="text-xl text-gray"></p>
+    </div>
+    <div class="pt-0 p-4 md:p-6">
+      <p class="text-xl text-gray uppercase tracking-wider">
+        <ng-content></ng-content>
+      </p>
+    </div>
+</button>

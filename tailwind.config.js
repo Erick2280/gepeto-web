@@ -89,6 +89,7 @@ module.exports = {
         900: '#0D0D0D',
         950: '#050505'
       },
+      'transparent': 'transparent',
     },
     fontFamily: {
       sans: ['Livvic', 'sans-serif'],

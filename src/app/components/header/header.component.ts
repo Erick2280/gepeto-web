@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { OpenAIApiService, OpenAIApiServiceStatus } from 'src/app/services/openai-api/openai-api.service';
 
 @Component({
   selector: 'app-header',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
+  OpenAIApiServiceStatus = OpenAIApiServiceStatus;
 
+  constructor (public apiService: OpenAIApiService) {}
 }

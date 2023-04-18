@@ -1,26 +1,42 @@
 <app-header></app-header>
 <section class="w-full mx-auto max-w-7xl min-h-[70vh] flex items-center">
-    <div class="px-8">
-        <h2 class="font-bold text-xl md:text-4xl my-2">
+    <div class="w-full" *ngIf="apiService.serviceStatus === OpenAIApiServiceStatus.Initializing">
+        <app-loading-indicator></app-loading-indicator>
+    </div>
+    <div class="px-8" *ngIf="apiService.serviceStatus !== OpenAIApiServiceStatus.Initializing">
+        <h2 class="font-bold text-xl md:text-4xl my-2" *ngIf="apiService.serviceStatus === OpenAIApiServiceStatus.ApiKeyNotSet || apiService.serviceStatus === OpenAIApiServiceStatus.ApiKeyInvalid">
             Antes de começar, precisamos da sua chave da API do OpenAI.
         </h2>
+        <h2 class="font-bold text-xl md:text-4xl my-2" *ngIf="apiService.serviceStatus === OpenAIApiServiceStatus.Initialized">
+            Sua chave da API do OpenAI está configurada, mas você pode alterá-la aqui.
+        </h2>
         <p class="text-sm md:text-xl my-2">Sua chave é o pó de pirlimpimpim que precisamos para começar a criar histórias magníficas. Você pode <a href="https://platform.openai.com/account/api-keys">obter uma chave no site da OpenAI</a>.</p>
-        <form>
-            <div class="my-8 flex flex-col gap-2 sm:flex-row sm:gap-3">
+        <form class="my-8">
+            <div class="flex flex-col gap-2 sm:flex-row sm:gap-3">
               <div class="w-full">
                 <label for="openai-api-key-input" class="sr-only">Chave da API do OpenAI</label>
-                <input type="text" id="openai-api-key-input" name="openai-api-key-input" class="p-4 text-sm md:text-xl block w-full shadow-sm placeholder:text-gray-300 placeholder:font-normal font-medium rounded-xl border-4 border-gray focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all" placeholder="Insira sua chave da API da OpenAI">
+                <input type="password" [disabled]="!(this.setupStatus === SetupStatus.WaitingUserInput)" [(ngModel)]="apiKey" id="openai-api-key-input" name="openai-api-key-input" class="p-4 text-sm md:text-xl block w-full shadow-sm placeholder:text-gray-300 placeholder:font-normal font-medium rounded-xl border-4 border-gray focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all disabled:opacity-70" placeholder="Insira sua chave da API da OpenAI">
               </div>
-              <a class="w-fit sm:w-auto flex flex-col mt-2 sm:mt-auto bg-lavender border-4 shadow-sm rounded-xl border-gray hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all" href="#">
-                <div class="p-4">
+              <button *ngIf="this.setupStatus !== SetupStatus.Completed" [disabled]="!(this.setupStatus === SetupStatus.WaitingUserInput) || this.apiKey == ''" class="w-fit sm:w-auto flex flex-col mt-2 sm:mt-auto bg-lavender border-4 shadow-sm rounded-xl border-gray focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all disabled:opacity-60 opacity-100 enabled:hover:shadow-xl" (click)="continueSetup()">
+                <div *ngIf="this.setupStatus === SetupStatus.WaitingUserInput" class="p-4">
                   <div class="flex justify-between items-center">
                     <p class="font-bold text-sm md:text-xl text-gray">
                         Continuar
                     </p>
                   </div>
                 </div>
-              </a>
-            </div>
+                <div *ngIf="this.setupStatus === SetupStatus.InProgress" class="p-4">
+                    <div class="flex justify-between items-center">
+                      <p class="font-bold text-sm md:text-xl text-gray flex flex-row items-center" role="status">
+                        <span class="animate-spin inline-block w-4 h-4 mr-2 border-4 border-lavender-700 border-t-lavender rounded-full" aria-hidden="true">
+                        </span>
+                          Configurando...
+                      </p>
+                    </div>
+                  </div>
+            </button>
+        </div>
+        <p *ngIf="apiService.serviceStatus === OpenAIApiServiceStatus.ApiKeyInvalid" class="text-sm md:text-xl mt-4 text-red-800">A chave que você inseriu é inválida.</p>
           </form>
           <p class="text-sm md:text-xl my-2 italic">Esta informação é armazenada apenas localmente e é utilizada para fazer as requisições para a OpenAI. Se você tiver uma conta paga, cobranças poderão ser realizadas.</p>
     </div>
