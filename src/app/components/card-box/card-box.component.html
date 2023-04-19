@@ -1,9 +1,12 @@
-<button #cardBoxButton [ngStyle]="{'background-image': 'url(' + cardBackgroundImage + ')' }" class="relative flex flex-col w-full min-h-[15rem] bg-center bg-cover rounded-3xl hover:shadow-lg transition border-4 border-gray">
-    <div class="flex-auto p-4 md:p-6">
-      <p class="text-xl text-gray"></p>
+<button [disabled]="cardDisabled" (click)="onCardButtonClick($event)" [ngStyle]="{'background-image': cardBackgroundImage ? 'url(' + cardBackgroundImage + ')' : undefined, }" [ngClass]="backgroundClasses" class="relative flex min-h-[8rem] lg:min-h-[15rem] flex-col w-full bg-center rounded-3xl enabled:hover:shadow-lg transition border-4 border-gray bg-lavender-100 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all">
+    <div class="flex-auto p-4 md:p-6 self-end h-[33px]">
+      <svg *ngIf="cardSelected" width="29" height="33" viewBox="0 0 29 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14.5" cy="18.5" r="12.5" fill="#FFFAE8" stroke="#494949" stroke-width="4"/>
+        <path d="M9.84472 15.3623L14.3837 23.5902L25 3.5" stroke="#71997A" stroke-width="6.38573" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
     <div class="pt-0 p-4 md:p-6">
-      <p class="text-xl text-gray uppercase tracking-wider">
+      <p class="text-sm md:text-lg text-gray uppercase tracking-wider bg-lavender border-4 border-gray p-2 rounded-xl text-left">
         <ng-content></ng-content>
       </p>
     </div>

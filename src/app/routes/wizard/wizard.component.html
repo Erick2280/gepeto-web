@@ -6,21 +6,18 @@
     
     <ng-container *ngIf="apiService.serviceStatus === OpenAIApiServiceStatus.Initialized">
         <div class="border-4 border-gray bg-lavender rounded-xl mx-8 md:mr-16 flex flex-row justify-between items-center">
-            <ul role="menu" class="flex flex-row overflow-x-auto pencil-stepper">
-                <li role="presentation" class="py-4 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Characters}">
-                    Personagens
+            <ul role="menu" class="flex flex-row overflow-x-auto pencil-stepper focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl">
+                <li role="presentation" class="py-2 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Characters}">
+                    <button [disabled]="!canGoToStep(WizardStep.Characters)" (click)="goToStep(WizardStep.Characters)" class="p-2 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">Personagens</button>
                 </li>
-                <li role="presentation" class="py-4 px-6 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Scenario}">
-                    Cenário
+                <li role="presentation" class="py-2 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Scenario}">
+                    <button [disabled]="!canGoToStep(WizardStep.Scenario)" (click)="goToStep(WizardStep.Scenario)" class="p-2 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">Cenário</button>
                 </li>
-                <li role="presentation" class="py-4 px-6 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Plot}">
-                    Enredo
+                <li role="presentation" class="py-2 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Plot}">
+                    <button [disabled]="!canGoToStep(WizardStep.Plot)" (click)="goToStep(WizardStep.Plot)" class="p-2 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">Enredo</button>
                 </li>
-                <li role="presentation" class="py-4 px-6 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Illustrations}">
-                    Ilustrações
-                </li>
-                <li role="presentation" class="py-4 px-6 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Narration}">
-                    Narração
+                <li role="presentation" class="py-2 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Illustrations}">
+                    <button  [disabled]="!canGoToStep(WizardStep.Illustrations)"(click)="goToStep(WizardStep.Illustrations)" class="p-2 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">Ilustrações</button>
                 </li>
             </ul>
             <div class="hidden md:block relative top-[2.2rem] right-4" aria-hidden="true">
@@ -41,7 +38,10 @@
                 
             </div>
         </div>
-        
-        <app-wizard-step-characters></app-wizard-step-characters>
+
+        <app-wizard-step-characters *ngIf="currentStep === WizardStep.Characters"></app-wizard-step-characters>
+        <app-wizard-step-scenario *ngIf="currentStep === WizardStep.Scenario"></app-wizard-step-scenario>
+        <app-wizard-step-plot *ngIf="currentStep === WizardStep.Plot"></app-wizard-step-plot>
+        <app-wizard-step-illustrations *ngIf="currentStep === WizardStep.Illustrations"></app-wizard-step-illustrations>
     </ng-container>
 </section>

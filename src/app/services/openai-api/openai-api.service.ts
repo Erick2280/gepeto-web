@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Configuration, OpenAIApi, CreateChatCompletionRequest, ChatCompletionRequestMessage } from 'openai';
 import { StorageKey, StorageService } from '../storage/storage.service';
+import { Character } from '../story/story.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class OpenAIApiService {
     frequency_penalty: 0,
     presence_penalty: 0,
   }
+  public readonly CHARACTER_GENERATION_AMOUNT = 11;
+  public readonly RELATED_CHARACTER_GENERATION_AMOUNT = 3;
+  public readonly SCENARIO_GENERATION_AMOUNT = 5;
+  public readonly PLOT_GENERATION_AMOUNT = 4;
 
   constructor(private storageService: StorageService) {
     this.initialization = this.initialize();
@@ -48,15 +53,15 @@ export class OpenAIApiService {
     }
   }
 
-  async getCharacters(): Promise<CharacterTextual[]> {
+  async getCharacters(): Promise<CharacterSuggestion[]> {
     try {
       if (!this.openAIApi) {
         throw new Error('OpenAI API is not initialized');
       }
       
-      const prompt = `Dê uma lista com 20 personagens (podem ser de filmes, séries, desenhos animados, jogos, contos, entre outros, que sejam brasileiros ou estrangeiros) que têm apelo infantil.
+      const prompt = `Dê uma lista com ${this.CHARACTER_GENERATION_AMOUNT} personagens (podem ser de filmes, séries, desenhos animados, jogos, contos, entre outros, que sejam brasileiros ou estrangeiros) que têm apelo infantil.
       A resposta deve ser dada no seguinte formato:
-      - <Nome do personagem> - <Descrição do Personagem> - <Título do artigo do personagem na Wikipédia em português>`;
+      - <Nome do personagem> - <Descrição do Personagem> - <URL do artigo do personagem na Wikipédia em português>`;
 
       const completion = await this.openAIApi.createChatCompletion({
         ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
@@ -64,11 +69,11 @@ export class OpenAIApiService {
       });
 
       const characters = completion.data.choices[0]?.message?.content?.trim().split('\n').map((character) => {
-        const [name, description, articleTitle] = character.split(' - ');
+        const [name, description, articleUrl] = character.split(' - ');
         return {
           name: name.replace('-', '').trim(),
           description,
-          articleTitle};
+          articleUrl};
       });
 
       if (characters == null) {
@@ -82,7 +87,7 @@ export class OpenAIApiService {
     }
   }
 
-  async getRelatedCharacters(relatedCharacters: CharacterTextual[]): Promise<CharacterTextual[]> {
+  async getRelatedCharacters(relatedCharacters: CharacterSuggestion[]): Promise<CharacterSuggestion[]> {
       try {
       if (!this.openAIApi) {
         throw new Error('OpenAI API is not initialized');
@@ -90,9 +95,9 @@ export class OpenAIApiService {
       
       const relatedCharactersString = relatedCharacters.map((character) => `${character.name}`).join(', ');
 
-      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString}, dê uma lista com 4 personagens relacionados.
+      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString}, dê uma lista com ${this.RELATED_CHARACTER_GENERATION_AMOUNT} personagens relacionados.
       A resposta deve ser dada no seguinte formato:
-      - <Nome do personagem> - <Descrição do Personagem> - <Título do artigo do personagem na Wikipédia em português>`;
+      - <Nome do personagem> - <Descrição do Personagem> - <URL do artigo do personagem na Wikipédia em português>`;
 
       const completion = await this.openAIApi.createChatCompletion({
         ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
@@ -100,11 +105,11 @@ export class OpenAIApiService {
       });
 
       const characters = completion.data.choices[0]?.message?.content?.trim().split('\n').map((character) => {
-        const [name, description, articleTitle] = character.split(' - ');
+        const [name, description, articleUrl] = character.split(' - ');
         return {
           name: name.replace('-', '').trim(),
           description,
-          articleTitle
+          articleUrl
         };
       })
 
@@ -119,7 +124,7 @@ export class OpenAIApiService {
     }
   }
 
-  async getScenarioSuggestions(characters: CharacterTextual[]): Promise<Scenario[]> {
+  async getScenarioSuggestions(characters: (CharacterSuggestion | Character)[]): Promise<ScenarioSuggestion[]> {
     try {
       if (!this.openAIApi) {
         throw new Error('OpenAI API is not initialized');
@@ -127,9 +132,9 @@ export class OpenAIApiService {
       
       const relatedCharactersString = characters.map((character) => `${character.name}`).join(', ');
 
-      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString}, sugira 4 cenários (localizações) onde poderia acontecer uma história envolvendo eles.
+      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString}, sugira ${this.SCENARIO_GENERATION_AMOUNT} locais onde poderia acontecer uma história envolvendo eles.
       A resposta deve ser dada no seguinte formato:
-      - <Título do cenário> - <Descrição do cenário>`;
+      - <Nome do local> - <Descrição apenas do local, sem citar personagens>`;
 
       const completion = await this.openAIApi.createChatCompletion({
         ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
@@ -142,7 +147,7 @@ export class OpenAIApiService {
           name: name.substring(2),
           description
         };
-      });
+      }).filter((scenario) => scenario.name && scenario.description);
       
       if (scenarios == null) {
         throw new Error('Scenario array is null');
@@ -152,6 +157,66 @@ export class OpenAIApiService {
     } catch (error) {
       console.log('Error while getting scenario suggestions', error);
       throw new Error('Error while getting scenario suggestions');
+    }
+  }
+
+  async getPlotSuggestions(characters: (CharacterSuggestion | Character)[], scenarioPrompt: string): Promise<PlotSuggestion[]> {
+    try {
+      if (!this.openAIApi) {
+        throw new Error('OpenAI API is not initialized');
+      }
+      
+      const relatedCharactersString = characters.map((character) => `${character.name}`).join(', ');
+
+      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString} e o seguinte cenário: ${scenarioPrompt}, sugira ${this.PLOT_GENERATION_AMOUNT} enredos sucintos para uma história envolvendo eles.
+      A resposta deve ser dada no seguinte formato:
+      - <Insira o enredo aqui>`;
+
+      const completion = await this.openAIApi.createChatCompletion({
+        ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
+        messages: [this.SYSTEM_CHAT_COMPLETION_MESSAGE, {role: 'user', content: prompt}],
+      });
+
+      const plots = completion.data.choices[0]?.message?.content?.trim().split('\n').map((plot) => {
+        return {
+          text: plot.substring(2)
+        };
+      }).filter((plot) => plot.text);
+      
+      if (plots == null) {
+        throw new Error('Plot array is null');
+      }
+
+      return plots;
+    } catch (error) {
+      console.log('Error while getting plot suggestions', error);
+      throw new Error('Error while getting plot suggestions');
+    }
+  }
+
+  async translateToEnglish(text: string): Promise<string> {
+    try {
+      if (!this.openAIApi) {
+        throw new Error('OpenAI API is not initialized');
+      }
+
+      const prompt = `Traduza para o inglês: ${text}`;
+
+      const completion = await this.openAIApi.createChatCompletion({
+        ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
+        messages: [{role: 'system', content: 'Você é um assistente de tradução.'}, {role: 'user', content: prompt}],
+      });
+
+      const translation = completion.data.choices[0]?.message?.content?.trim();
+
+      if (translation == null) {
+        throw new Error('Translation is null');
+      }
+
+      return translation;
+    } catch (error) {
+      console.log('Error while getting translation', error);
+      throw new Error('Error while getting translation');
     }
   }
 
@@ -181,6 +246,28 @@ export class OpenAIApiService {
   }
 }
 
+export const ART_STYLES: ArtStyle[] = [
+  {
+    name: 'Realista',
+    prompt: 'em estilo realista',
+    sampleImageUrl: 'assets/samples/sample-realistic.png'
+  },
+  {
+    name: 'Anime',
+    prompt: 'em estilo Studio Ghibli',
+    sampleImageUrl: 'assets/samples/sample-anime.png'
+  },
+  {
+    name: 'Mangá',
+    prompt: 'em estilo mangá',
+    sampleImageUrl: 'assets/samples/sample-manga.png'
+  },
+  {
+    name: 'Renascentista',
+    prompt: 'em estilo renascentista',
+    sampleImageUrl: 'assets/samples/sample-renaissance.png'
+  }];
+
 export enum OpenAIApiServiceStatus {
   ApiKeyNotSet = 'api-key-not-set',
   ApiKeyInvalid = 'api-key-invalid',
@@ -188,13 +275,22 @@ export enum OpenAIApiServiceStatus {
   Initialized = 'initialized',
 }
 
-export interface CharacterTextual {
+export interface CharacterSuggestion {
   name: string;
   description: string;
-  articleTitle: string;
+  articleUrl: string;
+}
+export interface ScenarioSuggestion {
+  name: string;
+  description: string;
 }
 
-export interface Scenario {
+export interface PlotSuggestion {
+  text: string;
+}
+
+export interface ArtStyle {
   name: string;
-  description: string;
+  prompt: string;
+  sampleImageUrl: string;
 }

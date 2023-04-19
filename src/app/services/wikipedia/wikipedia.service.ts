@@ -8,8 +8,13 @@ export class WikipediaService {
 
   constructor() {}
   
-  async getArticleMainPhoto(articleTitle: string) {
-    const summary = await wikipedia.summary(articleTitle);
-    return summary.thumbnail.source
+  async getArticleMainPhoto(articleTitle: string): Promise<string | null> {
+    try {
+      wikipedia.setLang('pt');
+      const summary = await wikipedia.summary(articleTitle);
+      return summary.thumbnail.source
+    } catch {
+      return null
+    }
   }
 }

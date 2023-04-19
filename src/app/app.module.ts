@@ -20,7 +20,6 @@ import { WizardStepCharactersComponent } from './components/wizard-step-characte
 import { WizardStepScenarioComponent } from './components/wizard-step-scenario/wizard-step-scenario.component';
 import { WizardStepPlotComponent } from './components/wizard-step-plot/wizard-step-plot.component';
 import { WizardStepIllustrationsComponent } from './components/wizard-step-illustrations/wizard-step-illustrations.component';
-import { WizardStepNarrationComponent } from './components/wizard-step-narration/wizard-step-narration.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { WizardStepNarrationComponent } from './components/wizard-step-narration
     WizardStepScenarioComponent,
     WizardStepPlotComponent,
     WizardStepIllustrationsComponent,
-    WizardStepNarrationComponent,
   ],
   imports: [
     BrowserModule,

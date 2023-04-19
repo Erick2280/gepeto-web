@@ -10,7 +10,7 @@ import { StorageKey, StorageService } from 'src/app/services/storage/storage.ser
 })
 export class SetupComponent implements OnInit {
   apiKey = '';
-  setupStatus: SetupStatus = SetupStatus.WaitingUserInput;
+  setupStatus: SetupStatus = SetupStatus.AwaitingUserInput;
 
   SetupStatus = SetupStatus;
   OpenAIApiServiceStatus = OpenAIApiServiceStatus;
@@ -28,7 +28,7 @@ export class SetupComponent implements OnInit {
       this.setupStatus = SetupStatus.Completed;
       this.router.navigateByUrl('/wizard');
     } else {
-      this.setupStatus = SetupStatus.WaitingUserInput;
+      this.setupStatus = SetupStatus.AwaitingUserInput;
     }
   }
 
@@ -39,7 +39,7 @@ export class SetupComponent implements OnInit {
 }
 
 enum SetupStatus {
-  WaitingUserInput = 'waiting-user-input',
+  AwaitingUserInput = 'awaiting-user-input',
   InProgress = 'in-progress',
   Completed = 'completed',
 }

@@ -1,1 +1,7 @@
-<p>wizard-step-illustrations works!</p>
+<div class="m-8 flex flex-col xl:flex-row xl:items-center xl:min-h-[6rem]">
+    <h2 class="text-xl sm:text-3xl xl:pr-20 xl:w-[50%]">Selecione o estilo das ilustrações</h2>
+</div>
+
+<div class="m-8 grid grid-cols-2 xl:grid-cols-4 gap-4">
+    <app-card-box backgroundClasses="bg-cover" (cardClick)="selectArtStyle(artStyle)" [cardSelected]="isArtStyleSelected(artStyle)" *ngFor="let artStyle of ART_STYLES" [cardBackgroundImage]="artStyle.sampleImageUrl">{{ artStyle.name }}</app-card-box>
+</div>

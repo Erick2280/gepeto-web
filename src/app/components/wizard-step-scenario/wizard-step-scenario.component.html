@@ -1,1 +1,36 @@
-<p>wizard-step-scenario works!</p>
+<div class="m-8 flex flex-col xl:flex-row xl:items-center xl:min-h-[6rem]">
+    <h2 class="text-xl sm:text-3xl xl:pr-20 xl:w-[50%]">Selecione o cenário da sua história</h2>
+
+</div>
+
+<div class="m-8 flex flex-col lg:flex-row gap-12">
+    <div class="flex flex-col max-w-[512px] border-4 rounded-xl border-gray">
+        <img class="w-full h-auto rounded-t-lg" [ngClass]="{'animate-pulse': status === WizardStepScenarioStatus.GeneratingImage}" [src]="imageUrl" [alt]="imageAlternativeText">
+        <div class="p-4 bg-latte-50 rounded-b-lg flex flex-row">
+            <textarea [disabled]="status === WizardStepScenarioStatus.GeneratingImage" [(ngModel)]="storyService.scenarioDescription" class="p-2 text-sm md:text-lg h-[100px] resize-none block w-full placeholder:text-gray-300 placeholder:font-normal font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all disabled:opacity-70" placeholder="Escreva a descrição do cenário da sua história, ou selecione uma das sugestões."></textarea>
+            <button (click)="generateFromPrompt()" [disabled]="storyService.scenarioDescription === '' || status === WizardStepScenarioStatus.GeneratingImage" class="bg-lavender border-4 border-gray shadow-sm enabled:hover:shadow-xl disabled:opacity-60 enabled:hover:bg-lavender-300 p-4 ml-4 rounded-xl rounded-tr-none focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all">
+                <span class="sr-only">Pré-visualizar imagem</span>
+                <svg width="58" height="58" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M50.7973 6.69587C49.9446 5.84325 48.7882 5.36426 47.5824 5.36426C46.3766 5.36426 45.2202 5.84325 44.3675 6.69587L20.6616 33.0967C23.2533 33.6245 25.8405 36.1612 26.1931 38.6282L50.7973 13.1257C51.6499 12.273 52.1289 11.1166 52.1289 9.91077C52.1289 8.70496 51.6499 7.54853 50.7973 6.69587ZM15.4962 37.7299C12.141 37.7299 9.43248 40.481 9.43248 43.8902C9.43248 46.5796 7.08783 47.9967 5.38998 47.9967C7.24953 50.5019 10.4229 52.1032 13.475 52.1032C17.9419 52.1032 21.56 48.4279 21.56 43.8902C21.56 40.481 18.8515 37.7299 15.4962 37.7299Z" stroke="#494949" stroke-width="3.59333" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                
+            </button>
+        </div>
+    </div>
+
+    <div class="lg:w-[50%]">
+    <h3 class="uppercase font-extrabold tracking-widest mb-4">Sugestões</h3>
+        <ul class="flex flex-col gap-4" *ngIf="status !== WizardStepScenarioStatus.FetchingSuggestions">
+            <li *ngFor="let suggestion of suggestions">
+                <button [disabled]="status === WizardStepScenarioStatus.GeneratingImage" (click)="copySuggestionToPrompt(suggestion)" class="p-4 border-4 bg-pistacchio-100 w-full text-left border-gray text-xl text-gray uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all rounded-xl enabled:hover:shadow-lg">
+                  {{ suggestion.name }}
+                </button>
+            </li>
+        </ul>
+        <ul class="flex flex-col gap-4" *ngIf="status === WizardStepScenarioStatus.FetchingSuggestions">
+            <li *ngFor="let placeholder of placeholders">
+                <button disabled="true" class="h-[68px] animate-pulse p-4 border-4 bg-pistacchio-100 w-full text-left border-gray text-xl text-gray uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all rounded-xl enabled:hover:shadow-lg">
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>

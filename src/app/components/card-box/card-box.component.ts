@@ -7,6 +7,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class CardBoxComponent {
   @Input() cardBackgroundImage?: string;
+  @Input() cardDisabled? = false;
+  @Input() cardSelected? = false;
+  @Input() backgroundClasses?: string;
   @Output() cardClick = new EventEmitter();
   showIcon = false;
 

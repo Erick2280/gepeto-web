@@ -1,1 +1,27 @@
-<p>wizard-step-plot works!</p>
+<div class="m-8 flex flex-col xl:flex-row xl:items-center xl:min-h-[6rem]">
+    <h2 class="text-xl sm:text-3xl xl:pr-20 xl:w-[50%]">Escreva o enredo da sua história</h2>
+
+</div>
+
+<div class="m-8">
+    <div class="border-4 rounded-xl border-gray">
+        <div class="p-4 bg-latte-50 rounded-lg flex flex-row h-full">
+            <textarea [(ngModel)]="storyService.plot" class="p-2 h-[256px] text-sm md:text-lg resize-none block w-full placeholder:text-gray-300 placeholder:font-normal font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all disabled:opacity-70" placeholder="Escreva o enredo da sua história, ou selecione uma das sugestões."></textarea>
+        </div>
+    </div>
+
+    <h3 class="uppercase font-extrabold tracking-widest mt-12 mb-4">Sugestões</h3>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch"> 
+            <li *ngFor="let suggestion of plotSuggestions">
+                <button (click)="selectPlotSuggestion(suggestion)" class="p-4 border-4 bg-pistacchio-100 h-full w-full text-left border-gray text-sm md:text-lg text-gray focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all rounded-xl enabled:hover:shadow-lg">
+                  {{ suggestion.text }}
+                </button>
+            </li>
+        </ul>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4" *ngIf="status === WizardStepPlotStatus.FetchingSuggestions">
+            <li *ngFor="let placeholder of placeholders">
+                <button disabled="true" class="h-[132px] animate-pulse p-4 border-4 bg-pistacchio-100 w-full text-left border-gray text-sm md:text-lg text-gray focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all rounded-xl enabled:hover:shadow-lg">
+                </button>
+            </li>
+        </ul>
+</div>

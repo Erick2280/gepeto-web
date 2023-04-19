@@ -1,7 +1,41 @@
-<div class="m-8 flex flex-col xl:flex-row xl:items-center">
-    <h2 class="text-xl sm:text-3xl xl:pr-20">Selecione os personagens da sua história</h2>
+<div class="m-8 flex flex-col xl:flex-row xl:items-center xl:min-h-[6rem]">
+    <h2 class="text-xl sm:text-3xl xl:pr-20 xl:w-[50%]">Selecione os personagens da sua história</h2>
 
-    <div class="pt-8 xl:pt-0">
+    <div *ngIf="storyService.selectedCharacters.length !== 0" class="pt-8 xl:pt-0 xl:w-[50%]">
         <h3 class="uppercase font-extrabold tracking-widest">Selecionados</h3>
+        <div class="flex flex-wrap gap-2 my-2">
+            <span *ngFor="let character of storyService.selectedCharacters" class="inline-flex items-center gap-1.5 py-1.5 pl-3 pr-2 rounded-full text-xs lg:text-sm font-medium bg-lavender text-gray">
+                {{ character.name }}
+                <button type="button" (click)="unselectCharacter(character)" class="flex-shrink-0 h-4 w-4 inline-flex items-center justify-center rounded-full text-gray transition-all hover:bg-lavender-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-2">
+                  <span class="sr-only">Remover personagem</span>
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+                </button>
+              </span>
+        </div>
+              
     </div>
+</div>
+
+<div *ngIf="status === WizardStepCharactersStatus.FetchingCharacters" class="m-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <app-card-box [cardDisabled]="true" *ngFor="let placeholder of placeholders" class="animate-pulse"></app-card-box>
+</div>
+
+<div *ngIf="status !== WizardStepCharactersStatus.FetchingCharacters" class="m-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="relative flex justify-between min-h-[8rem] lg:min-h-[15rem] flex-col border-dashed w-full bg-center rounded-3xl enabled:hover:shadow-lg transition border-4 border-gray bg-lavender-100">
+      <p class="pt-6 pl-6 pb-2 lg:p-8 uppercase font-bold tracking-wider">Personagem customizado</p>
+      <div class="pt-0 pb-4 px-4 lg:p-6 flex flex-row">
+        <input [(ngModel)]="customCharacterName" type="text" class="text-sm md:text-lg text-gray uppercase tracking-wider bg-lavender border-4 border-gray p-2 rounded-xl rounded-r-none text-left w-[80%] focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all">
+        <button (click)="createCustomCharacter()" [disabled]="customCharacterName === ''" class="bg-lavender border-4 border-gray shadow-sm enabled:hover:shadow-xl disabled:opacity-60 enabled:hover:bg-lavender-300 p-4 ml-4 rounded-xl rounded-l-none focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-4 transition-all">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0C11.1046 0 12 0.89543 12 2V8L18 8C19.1046 8 20 8.89543 20 10C20 11.1046 19.1046 12 18 12H12V18C12 19.1046 11.1046 20 10 20C8.89543 20 8 19.1046 8 18V12H2C0.89543 12 0 11.1046 0 10C1.19209e-07 8.89543 0.895431 8 2 8L8 8V2C8 0.89543 8.89543 0 10 0Z" fill="#494949"/>
+          </svg>            
+          <span class="sr-only">
+            Adicionar personagem customizado
+          </span>
+        </button>
+      </div>
+    </div>
+    <app-card-box backgroundClasses="bg-contain bg-no-repeat" [cardDisabled]="status === WizardStepCharactersStatus.FetchingImages" *ngFor="let character of characters" [cardSelected]="isSelected(character)" [cardBackgroundImage]="character.imageUrl" (cardClick)="toggleCharacterSelection(character)">{{character.name}}</app-card-box>
 </div>
