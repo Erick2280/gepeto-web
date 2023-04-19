@@ -19,6 +19,11 @@
                 <li role="presentation" class="py-2 px-4 text-lg" [ngClass]="{ 'font-bold': currentStep === WizardStep.Illustrations}">
                     <button  [disabled]="!canGoToStep(WizardStep.Illustrations)"(click)="goToStep(WizardStep.Illustrations)" class="p-2 focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">Ilustrações</button>
                 </li>
+                <li role="presentation" class="py-2 px-4 text-lg" *ngIf="canCreateStory()">
+                    <button (click)="createStory()" class="px-2 py-1 uppercase bg-pistacchio-100 hover:bg-pistacchio-200 border-gray shadow-sm transition-all enabled:hover:shadow-xl font-bold rounded-xl border-4 tracking-wider focus:outline-none focus:ring-2 focus:ring-pistacchio focus:ring-offset-8 focus:rounded-xl disabled:opacity-60">                        
+                        Gerar história
+                    </button>
+                </li>
             </ul>
             <div class="hidden md:block relative top-[2.2rem] right-4" aria-hidden="true">
                 <svg class="absolute bottom-[1px]" width="55" height="68" viewBox="0 0 55 68" fill="none" xmlns="http://www.w3.org/2000/svg">

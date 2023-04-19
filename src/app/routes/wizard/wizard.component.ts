@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { OpenAIApiService, OpenAIApiServiceStatus } from 'src/app/services/openai-api/openai-api.service';
 import { StoryService } from 'src/app/services/story/story.service';
 import { WikipediaService } from 'src/app/services/wikipedia/wikipedia.service';
@@ -14,7 +15,7 @@ export class WizardComponent {
   OpenAIApiServiceStatus = OpenAIApiServiceStatus;
   WizardStep = WizardStep;
 
-  constructor(public apiService: OpenAIApiService, public wikipediaService: WikipediaService, private storyService: StoryService) {}
+  constructor(public apiService: OpenAIApiService, public wikipediaService: WikipediaService, private storyService: StoryService, private router: Router) {}
 
   goToStep(step: WizardStep) {
     this.currentStep = step;
@@ -37,6 +38,14 @@ export class WizardComponent {
     }
 
     return true;
+  }
+
+  canCreateStory() {
+    return this.storyService.selectedCharacters.length > 0 && this.storyService.scenarioDescription && this.storyService.selectedArtStyle && this.storyService.plot;
+  }
+
+  createStory() {
+    this.router.navigateByUrl('/viewer');
   }
 }
 

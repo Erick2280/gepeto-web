@@ -194,6 +194,68 @@ export class OpenAIApiService {
     }
   }
 
+  async generateStory(characters: Character[], scenario: string, plot: string): Promise<string[]> {
+    try {
+      if (!this.openAIApi) {
+        throw new Error('OpenAI API is not initialized');
+      }
+      
+      const relatedCharactersString = characters.map((character) => `${character.name}`).join(', ');
+
+      const prompt = `Dado o(s) personagem(s) ${relatedCharactersString}, o seguinte cenário: ${scenario}, crie uma história com início, meio e fim, separada por parágrafos e com título, a parte do seguinte enredo:
+      ${plot}`;
+
+      const completion = await this.openAIApi.createChatCompletion({
+        ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
+        messages: [this.SYSTEM_CHAT_COMPLETION_MESSAGE, {role: 'user', content: prompt}],
+      });
+
+      const story = completion.data.choices[0]?.message?.content?.trim().split('\n').filter((paragraph) => paragraph);
+      
+      if (story == null) {
+        throw new Error('Story array is null');
+      }
+
+      return story;
+    } catch (error) {
+      console.log('Error while generating story', error);
+      throw new Error('Error while generating story');
+    }
+  }
+
+  async generateStoryImagePromps(story: string[]): Promise<string[]> {
+    try {
+      if (!this.openAIApi) {
+        throw new Error('OpenAI API is not initialized');
+      }
+      
+      const prompt = `Leia a seguinte história:
+      
+      ${story.join('\n')}
+      
+      A partir da história, descreva em inglês uma ilustração para cada parágrafo da história. A resposta deve ser dada no seguinte formato:
+      Illustration: <Insert description of illustration here>`;
+
+      const completion = await this.openAIApi.createChatCompletion({
+        ...this.CREATE_CHAT_COMPLETION_REQUEST_SETTINGS,
+        messages: [this.SYSTEM_CHAT_COMPLETION_MESSAGE, {role: 'user', content: prompt}],
+      });
+
+      const imagePrompts = completion.data.choices[0]?.message?.content?.trim().split('\n').map(
+        (imagePrompt) => imagePrompt.substring(14)
+      ).filter((prompt) => prompt);
+      
+      if (imagePrompts == null) {
+        throw new Error('Image prompts array is null');
+      }
+
+      return imagePrompts;
+    } catch (error) {
+      console.log('Error while generating story image prompts', error);
+      throw new Error('Error while generating story image prompts');
+    }
+  }
+
   async translateToEnglish(text: string): Promise<string> {
     try {
       if (!this.openAIApi) {
@@ -249,22 +311,22 @@ export class OpenAIApiService {
 export const ART_STYLES: ArtStyle[] = [
   {
     name: 'Realista',
-    prompt: 'em estilo realista',
+    prompt: 'Realistic style',
     sampleImageUrl: 'assets/samples/sample-realistic.png'
   },
   {
     name: 'Anime',
-    prompt: 'em estilo Studio Ghibli',
+    prompt: 'Studio Ghibli style',
     sampleImageUrl: 'assets/samples/sample-anime.png'
   },
   {
     name: 'Mangá',
-    prompt: 'em estilo mangá',
+    prompt: 'Manga style',
     sampleImageUrl: 'assets/samples/sample-manga.png'
   },
   {
     name: 'Renascentista',
-    prompt: 'em estilo renascentista',
+    prompt: 'Renaissance style',
     sampleImageUrl: 'assets/samples/sample-renaissance.png'
   }];
 
