@@ -23,7 +23,9 @@
     <ng-container *ngFor="let paragraph of story; index as i;">
         <div class="m-8 flex flex-col md:flex-row gap-6" [ngClass]="{'md:flex-row-reverse': i % 2 === 0, 'md:flex-row': i % 2 === 1}">
             <img class="rounded-2xl border-pistacchio border-4 w-72" [src]="storyImageUrls[i]">
-            <p class="text-sm md:text-lg">{{ paragraph }}</p>        
+            <div class="self-center">
+                <p class="text-lg md:text-xl">{{ paragraph }}</p>
+            </div>
         </div>
     </ng-container>
 

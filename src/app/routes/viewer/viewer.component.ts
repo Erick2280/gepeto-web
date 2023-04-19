@@ -32,7 +32,7 @@ export class ViewerComponent implements OnInit, AfterViewInit {
 
   async generateStory() {
     this.story = await this.apiService.generateStory(this.storyService.selectedCharacters, this.storyService.scenarioDescription, this.storyService.plot);
-    this.title = this.story[0];
+    this.title = this.story[0].replace('Título: ', '');
     this.story = this.story.slice(1);
 
     this.status = StoryGenerationStatus.GeneratingStoryImagePrompts;
