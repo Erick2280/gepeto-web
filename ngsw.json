@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1681882751887,
+  "timestamp": 1681889780201,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,13 +11,12 @@
         "ignoreVary": true
       },
       "urls": [
-        "/favicon.ico",
         "/index.html",
-        "/main.e74ac621f4707874.js",
+        "/main.2e0679cbd8d8d61f.js",
         "/manifest.webmanifest",
         "/polyfills.1826a7fce005961a.js",
         "/runtime.78674d5be66fe995.js",
-        "/styles.8eb0e6afb20af042.css"
+        "/styles.3df459d2d215d49b.css"
       ],
       "patterns": []
     },
@@ -42,7 +41,8 @@
         "/assets/samples/sample-anime.png",
         "/assets/samples/sample-manga.png",
         "/assets/samples/sample-realistic.png",
-        "/assets/samples/sample-renaissance.png"
+        "/assets/samples/sample-renaissance.png",
+        "/favicon.png"
       ],
       "patterns": []
     }
@@ -63,13 +63,13 @@
     "/assets/samples/sample-manga.png": "8884144b5510f702f00fc419b70218f19b962b7c",
     "/assets/samples/sample-realistic.png": "c915578c6d110a24523fb753c8b44f9459b05a7f",
     "/assets/samples/sample-renaissance.png": "ae9bba18e2d71b44f59c9e7fafbcd74968ea1f8f",
-    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "b1d7642bc2f2c086d4b0efacb01159b56443ab9e",
-    "/main.e74ac621f4707874.js": "8904132d634ad9d40090fc9bd21f460c5c32f514",
+    "/favicon.png": "e32c968784b5eed9cdb031b0b1d0c61d048a0740",
+    "/index.html": "3814c0256ad2ddc72311f3ba7e780814c91e59d6",
+    "/main.2e0679cbd8d8d61f.js": "bc34a901985e31bc8f0a187ad61aa1c4ae352dbd",
     "/manifest.webmanifest": "bf190e74590e8aaecc4e78c74873c3de8151bba1",
     "/polyfills.1826a7fce005961a.js": "6dd7e43676fa153f10086db675d6438539a5f49e",
     "/runtime.78674d5be66fe995.js": "b8c26e55e2238babae574b300c8b6379fb2382f2",
-    "/styles.8eb0e6afb20af042.css": "e13dc9dd45131c2d72826d6555b8a1ae4b4e46a1"
+    "/styles.3df459d2d215d49b.css": "8c588f44588d240854d0be9a871d98266ef1ff71"
   },
   "navigationUrls": [
     {
